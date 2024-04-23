@@ -1,0 +1,313 @@
+spec:
+  type: Spec
+  connection_specification:
+    type: object
+    $schema: http://json-schema.org/draft-07/schema#
+    required:
+      - client_id
+      - client_secret
+    properties:
+      client_id:
+        type: string
+        order: 0
+        title: Client ID
+        airbyte_secret: true
+      client_secret:
+        type: string
+        order: 1
+        title: Client Secret
+        airbyte_secret: true
+    additionalProperties: true
+type: DeclarativeSource
+check:
+  type: CheckStream
+  stream_names:
+    - users
+streams:
+  - name: users
+    type: DeclarativeStream
+    retriever:
+      type: SimpleRetriever
+      paginator:
+        type: NoPagination
+      requester:
+        path: /users
+        type: HttpRequester
+        url_base: https://marshmallow.cloud.looker.com/api/4.0
+        http_method: GET
+        authenticator:
+          type: OAuthAuthenticator
+          client_id: '{{ config[''client_id''] }}'
+          grant_type: client_credentials
+          client_secret: '{{ config[''client_secret''] }}'
+          refresh_request_body: {}
+          token_refresh_endpoint: https://marshmallow.cloud.looker.com/api/4.0/login
+        request_headers: {}
+        request_body_json: {}
+        request_parameters: {}
+      record_selector:
+        type: RecordSelector
+        extractor:
+          type: DpathExtractor
+          field_path: []
+      partition_router: []
+    primary_key:
+      - id
+    schema_loader:
+      type: InlineSchemaLoader
+      schema:
+        type: object
+        $schema: http://json-schema.org/schema#
+        properties:
+          id:
+            type: string
+          can:
+            type: object
+            properties:
+              show:
+                type: boolean
+              sudo:
+                type: boolean
+              index:
+                type: boolean
+              show_creds:
+                type: boolean
+              show_details:
+                type: boolean
+              update_creds:
+                type: boolean
+              index_details:
+                type: boolean
+          url:
+            type: string
+          email:
+            type: string
+          locale:
+            type: string
+          role_ids:
+            type: array
+            items:
+              type: string
+          sessions:
+            type: array
+            items:
+              type: object
+              properties:
+                id:
+                  type: string
+                can:
+                  type: object
+                url:
+                  type: string
+                city:
+                  type: string
+                state:
+                  type: string
+                browser:
+                  type: string
+                country:
+                  type: string
+                created_at:
+                  type: string
+                expires_at:
+                  type: string
+                ip_address:
+                  type: string
+                extended_at:
+                  type: string
+                extended_count:
+                  type: number
+                credentials_type:
+                  type: string
+                operating_system:
+                  type: string
+          ui_state:
+            type:
+              - object
+              - 'null'
+            properties:
+              embedGuide:
+                type: object
+                properties:
+                  has_embed_url:
+                    type: boolean
+                  update_theming:
+                    type: boolean
+                  sso_embed_codelab:
+                    type: boolean
+              viewPreference:
+                type: string
+              dismissedDialogs:
+                type: array
+                items:
+                  type: string
+              spacesSidebarCollapsed:
+                type: boolean
+              homepageGroupIdPreference:
+                type:
+                  - number
+                  - string
+              homepagePopularGroupIdPreference:
+                type:
+                  - number
+                  - string
+          group_ids:
+            type: array
+            items:
+              type: string
+          last_name:
+            type: string
+          avatar_url:
+            type: string
+          first_name:
+            type: string
+          is_disabled:
+            type: boolean
+          display_name:
+            type: string
+          is_iam_admin:
+            type: boolean
+          home_folder_id:
+            type: string
+          looker_versions:
+            type: array
+            items:
+              type: string
+          credentials_api3:
+            type: array
+            items:
+              type: object
+              properties:
+                id:
+                  type: string
+                can:
+                  type: object
+                url:
+                  type: string
+                type:
+                  type: string
+                client_id:
+                  type: string
+                created_at:
+                  type: string
+                is_disabled:
+                  type: boolean
+          credentials_saml:
+            type:
+              - object
+              - 'null'
+            properties:
+              can:
+                type: object
+              url:
+                type: string
+              type:
+                type: string
+              email:
+                type: string
+              created_at:
+                type: string
+              is_disabled:
+                type: boolean
+              logged_in_at:
+                type: string
+              saml_user_id:
+                type: string
+          credentials_totp:
+            type:
+              - object
+              - 'null'
+            properties:
+              can:
+                type: object
+              url:
+                type: string
+              type:
+                type: string
+              verified:
+                type: boolean
+              created_at:
+                type: string
+              is_disabled:
+                type: boolean
+          credentials_email:
+            type:
+              - object
+              - 'null'
+            properties:
+              can:
+                type: object
+                properties:
+                  show_password_reset_url:
+                    type: boolean
+              url:
+                type: string
+              type:
+                type: string
+              email:
+                type: string
+              user_id:
+                type: string
+              user_url:
+                type: string
+              created_at:
+                type: string
+              is_disabled:
+                type: boolean
+              logged_in_at:
+                type: string
+              account_setup_url:
+                type: string
+              password_reset_url:
+                type: string
+              forced_password_reset_at_next_login:
+                type: boolean
+          credentials_embed:
+            type: array
+          allow_direct_roles:
+            type: boolean
+          personal_folder_id:
+            type: string
+          models_dir_validated:
+            type:
+              - boolean
+              - 'null'
+          presumed_looker_employee:
+            type: boolean
+          roles_externally_managed:
+            type: boolean
+          verified_looker_employee:
+            type: boolean
+          avatar_url_without_sizing:
+            type: string
+          credentials_looker_openid:
+            type:
+              - object
+              - 'null'
+            properties:
+              can:
+                type: object
+              url:
+                type: string
+              type:
+                type: string
+              email:
+                type: string
+              user_url:
+                type: string
+              created_at:
+                type: string
+              is_disabled:
+                type: boolean
+              logged_in_at:
+                type: string
+              logged_in_ip:
+                type: string
+          allow_normal_group_membership:
+            type: boolean
+          allow_roles_from_normal_groups:
+            type: boolean
+version: 0.57.0
+metadata:
+  autoImportSchema:
+    users: true
