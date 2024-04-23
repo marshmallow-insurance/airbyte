@@ -1,0 +1,1304 @@
+spec:
+  type: Spec
+  connection_specification:
+    type: object
+    $schema: http://json-schema.org/draft-07/schema#
+    required:
+      - api_key
+    properties:
+      api_key:
+        type: string
+        order: 0
+        title: API Key
+        airbyte_secret: true
+    additionalProperties: true
+type: DeclarativeSource
+check:
+  type: CheckStream
+  stream_names:
+    - people
+streams:
+  - name: people
+    type: DeclarativeStream
+    retriever:
+      type: SimpleRetriever
+      paginator:
+        type: NoPagination
+      requester:
+        path: /people/search
+        type: HttpRequester
+        url_base: https://api.hibob.com/v1/
+        http_method: POST
+        authenticator:
+          type: ApiKeyAuthenticator
+          api_token: '{{ config[''api_key''] }}'
+          inject_into:
+            type: RequestOption
+            field_name: Authorization
+            inject_into: header
+        request_headers: {}
+        request_body_json:
+          showInactive: true
+        request_parameters: {}
+      record_selector:
+        type: RecordSelector
+        extractor:
+          type: DpathExtractor
+          field_path:
+            - employees
+      partition_router: []
+    primary_key:
+      - id
+    schema_loader:
+      type: InlineSchemaLoader
+      schema:
+        type: object
+        $schema: http://json-schema.org/schema#
+        properties:
+          id:
+            type: string
+          work:
+            type: object
+            properties:
+              site:
+                type: string
+              title:
+                type: string
+              custom:
+                type: object
+                properties:
+                  field_1630074448210:
+                    type:
+                      - 'null'
+                      - string
+              siteId:
+                type: number
+              manager:
+                type:
+                  - 'null'
+                  - string
+              isManager:
+                type: boolean
+              reportsTo:
+                type:
+                  - object
+                  - 'null'
+                properties:
+                  id:
+                    type: string
+                  email:
+                    type: string
+                  surname:
+                    type: string
+                  firstName:
+                    type: string
+                  displayName:
+                    type: string
+              startDate:
+                type: string
+              department:
+                type: string
+              tenureYears:
+                type: number
+              customColumns:
+                type: object
+                properties:
+                  column_1629202787624:
+                    type:
+                      - 'null'
+                      - string
+                  column_1629202807018:
+                    type:
+                      - 'null'
+                      - string
+                  column_1650459249570:
+                    type:
+                      - 'null'
+                      - string
+                  column_1713259376788:
+                    type:
+                      - 'null'
+                      - string
+              directReports:
+                type:
+                  - 'null'
+                  - number
+              shortStartDate:
+                type: string
+              tenureDuration:
+                type: object
+                properties:
+                  humanize:
+                    type: string
+                  periodISO:
+                    type: string
+                  sortFactor:
+                    type: number
+              yearsOfService:
+                type: number
+              indirectReports:
+                type:
+                  - 'null'
+                  - number
+              originalStartDate:
+                type: string
+              secondLevelManager:
+                type:
+                  - 'null'
+                  - string
+              activeEffectiveDate:
+                type: string
+              tenureDurationYears:
+                type: number
+              durationOfEmployment:
+                type: object
+                properties:
+                  humanize:
+                    type: string
+                  periodISO:
+                    type: string
+                  sortFactor:
+                    type: number
+              reportsToIdInCompany:
+                type:
+                  - 'null'
+                  - number
+              daysOfPreviousService:
+                type: number
+          about:
+            type: object
+            properties:
+              about:
+                type:
+                  - 'null'
+                  - string
+              avatar:
+                type: string
+              custom:
+                type: object
+                properties:
+                  field_1709661380007:
+                    type:
+                      - 'null'
+                      - string
+                  field_1709661519930:
+                    type:
+                      - 'null'
+                      - string
+              hobbies:
+                type: array
+                items:
+                  type: string
+              socialData:
+                type: object
+                properties:
+                  linkedin:
+                    type:
+                      - 'null'
+                      - string
+              superpowers:
+                type: array
+                items:
+                  type: string
+              foodPreferences:
+                type: array
+                items:
+                  type: string
+          email:
+            type: string
+          surname:
+            type: string
+          /root/id:
+            type: object
+            properties:
+              value:
+                type: string
+          fullName:
+            type: string
+          personal:
+            type: object
+            properties:
+              custom:
+                type: object
+                properties:
+                  field_1638446193612:
+                    type:
+                      - 'null'
+                      - string
+              pronouns:
+                type:
+                  - 'null'
+                  - string
+              shortBirthDate:
+                type:
+                  - 'null'
+                  - string
+          avatarUrl:
+            type:
+              - 'null'
+              - string
+          companyId:
+            type: number
+          firstName:
+            type: string
+          /work/site:
+            type: object
+            properties:
+              value:
+                type: string
+          /root/email:
+            type: object
+            properties:
+              value:
+                type: string
+          /work/title:
+            type: object
+            properties:
+              value:
+                type: string
+          displayName:
+            type: string
+          /about/about:
+            type: object
+            properties:
+              value:
+                type: string
+          /work/siteId:
+            type: object
+            properties:
+              value:
+                type: number
+          /about/avatar:
+            type: object
+            properties:
+              value:
+                type: string
+          /root/surname:
+            type: object
+            properties:
+              value:
+                type: string
+          /work/manager:
+            type: object
+            properties:
+              value:
+                type: string
+          coverImageUrl:
+            type: string
+          /about/hobbies:
+            type: object
+            properties:
+              value:
+                type: array
+                items:
+                  type: string
+          /root/fullName:
+            type: object
+            properties:
+              value:
+                type: string
+          /root/avatarUrl:
+            type: object
+            properties:
+              value:
+                type: string
+          /root/companyId:
+            type: object
+            properties:
+              value:
+                type: number
+          /root/firstName:
+            type: object
+            properties:
+              value:
+                type: string
+          /work/isManager:
+            type: object
+            properties:
+              value:
+                type: boolean
+          /work/reportsTo:
+            type: object
+            properties:
+              value:
+                type: object
+                properties:
+                  id:
+                    type: string
+                  email:
+                    type: string
+                  surname:
+                    type: string
+                  firstName:
+                    type: string
+                  displayName:
+                    type: string
+          /work/startDate:
+            type: object
+            properties:
+              value:
+                type: string
+          /work/department:
+            type: object
+            properties:
+              value:
+                type: string
+          creationDateTime:
+            type: string
+          /root/displayName:
+            type: object
+            properties:
+              value:
+                type: string
+          /work/tenureYears:
+            type: object
+            properties:
+              value:
+                type: number
+          /about/superpowers:
+            type: object
+            properties:
+              value:
+                type: array
+                items:
+                  type: string
+          /personal/pronouns:
+            type: object
+            properties:
+              value:
+                type: string
+          /root/coverImageUrl:
+            type: object
+            properties:
+              value:
+                type: string
+          /work/directReports:
+            type: object
+            properties:
+              value:
+                type: number
+          /work/shortStartDate:
+            type: object
+            properties:
+              value:
+                type: string
+          /work/tenureDuration:
+            type: object
+            properties:
+              value:
+                type: object
+                properties:
+                  humanize:
+                    type: string
+                  periodISO:
+                    type: string
+                  sortFactor:
+                    type: number
+          /work/yearsOfService:
+            type: object
+            properties:
+              value:
+                type: number
+          /work/indirectReports:
+            type: object
+            properties:
+              value:
+                type: number
+          /work/reportsTo/email:
+            type: object
+            properties:
+              value:
+                type: string
+          /about/foodPreferences:
+            type: object
+            properties:
+              value:
+                type: array
+                items:
+                  type: string
+          /root/creationDateTime:
+            type: object
+            properties:
+              value:
+                type: string
+          /work/originalStartDate:
+            type: object
+            properties:
+              value:
+                type: string
+          /personal/shortBirthDate:
+            type: object
+            properties:
+              value:
+                type: string
+          /work/secondLevelManager:
+            type: object
+            properties:
+              value:
+                type: string
+          /work/activeEffectiveDate:
+            type: object
+            properties:
+              value:
+                type: string
+          /work/tenureDurationYears:
+            type: object
+            properties:
+              value:
+                type: number
+          /about/socialData/linkedin:
+            type: object
+            properties:
+              value:
+                type: string
+          /work/durationOfEmployment:
+            type: object
+            properties:
+              value:
+                type: object
+                properties:
+                  humanize:
+                    type: string
+                  periodISO:
+                    type: string
+                  sortFactor:
+                    type: number
+          /work/reportsToIdInCompany:
+            type: object
+            properties:
+              value:
+                type: number
+          /work/daysOfPreviousService:
+            type: object
+            properties:
+              value:
+                type: number
+          /work/custom/field_1630074448210:
+            type: object
+            properties:
+              value:
+                type: string
+          /about/custom/field_1709661380007:
+            type: object
+            properties:
+              value:
+                type: string
+          /about/custom/field_1709661519930:
+            type: object
+            properties:
+              value:
+                type: string
+          /personal/custom/field_1638446193612:
+            type: object
+            properties:
+              value:
+                type: string
+          /work/customColumns/column_1629202787624:
+            type: object
+            properties:
+              value:
+                type: string
+          /work/customColumns/column_1629202807018:
+            type: object
+            properties:
+              value:
+                type: string
+          /work/customColumns/column_1650459249570:
+            type: object
+            properties:
+              value:
+                type: string
+          /work/customColumns/column_1713259376788:
+            type: object
+            properties:
+              value:
+                type: string
+  - name: work
+    type: DeclarativeStream
+    retriever:
+      type: SimpleRetriever
+      paginator:
+        type: NoPagination
+      requester:
+        path: /people/{{ stream_partition.parent_id }}/work
+        type: HttpRequester
+        url_base: https://api.hibob.com/v1/
+        http_method: GET
+        authenticator:
+          type: ApiKeyAuthenticator
+          api_token: '{{ config[''api_key''] }}'
+          inject_into:
+            type: RequestOption
+            field_name: Authorization
+            inject_into: header
+        request_headers: {}
+        request_body_json: {}
+        request_parameters: {}
+      record_selector:
+        type: RecordSelector
+        extractor:
+          type: DpathExtractor
+          field_path:
+            - values
+      partition_router:
+        - type: SubstreamPartitionRouter
+          parent_stream_configs:
+            - type: ParentStreamConfig
+              stream:
+                name: people
+                type: DeclarativeStream
+                retriever:
+                  type: SimpleRetriever
+                  paginator:
+                    type: NoPagination
+                  requester:
+                    path: /people/search
+                    type: HttpRequester
+                    url_base: https://api.hibob.com/v1/
+                    http_method: POST
+                    authenticator:
+                      type: ApiKeyAuthenticator
+                      api_token: '{{ config[''api_key''] }}'
+                      inject_into:
+                        type: RequestOption
+                        field_name: Authorization
+                        inject_into: header
+                    request_headers: {}
+                    request_body_json:
+                      showInactive: true
+                    request_parameters: {}
+                  record_selector:
+                    type: RecordSelector
+                    extractor:
+                      type: DpathExtractor
+                      field_path:
+                        - employees
+                  partition_router: []
+                primary_key:
+                  - id
+                schema_loader:
+                  type: InlineSchemaLoader
+                  schema:
+                    type: object
+                    $schema: http://json-schema.org/schema#
+                    properties:
+                      id:
+                        type: string
+                      work:
+                        type: object
+                        properties:
+                          site:
+                            type: string
+                          title:
+                            type: string
+                          custom:
+                            type: object
+                            properties:
+                              field_1630074448210:
+                                type:
+                                  - 'null'
+                                  - string
+                          siteId:
+                            type: number
+                          manager:
+                            type:
+                              - 'null'
+                              - string
+                          isManager:
+                            type: boolean
+                          reportsTo:
+                            type:
+                              - object
+                              - 'null'
+                            properties:
+                              id:
+                                type: string
+                              email:
+                                type: string
+                              surname:
+                                type: string
+                              firstName:
+                                type: string
+                              displayName:
+                                type: string
+                          startDate:
+                            type: string
+                          department:
+                            type: string
+                          tenureYears:
+                            type: number
+                          customColumns:
+                            type: object
+                            properties:
+                              column_1629202787624:
+                                type:
+                                  - 'null'
+                                  - string
+                              column_1629202807018:
+                                type:
+                                  - 'null'
+                                  - string
+                              column_1650459249570:
+                                type:
+                                  - 'null'
+                                  - string
+                              column_1713259376788:
+                                type:
+                                  - 'null'
+                                  - string
+                          directReports:
+                            type:
+                              - 'null'
+                              - number
+                          shortStartDate:
+                            type: string
+                          tenureDuration:
+                            type: object
+                            properties:
+                              humanize:
+                                type: string
+                              periodISO:
+                                type: string
+                              sortFactor:
+                                type: number
+                          yearsOfService:
+                            type: number
+                          indirectReports:
+                            type:
+                              - 'null'
+                              - number
+                          originalStartDate:
+                            type: string
+                          secondLevelManager:
+                            type:
+                              - 'null'
+                              - string
+                          activeEffectiveDate:
+                            type: string
+                          tenureDurationYears:
+                            type: number
+                          durationOfEmployment:
+                            type: object
+                            properties:
+                              humanize:
+                                type: string
+                              periodISO:
+                                type: string
+                              sortFactor:
+                                type: number
+                          reportsToIdInCompany:
+                            type:
+                              - 'null'
+                              - number
+                          daysOfPreviousService:
+                            type: number
+                      about:
+                        type: object
+                        properties:
+                          about:
+                            type:
+                              - 'null'
+                              - string
+                          avatar:
+                            type: string
+                          custom:
+                            type: object
+                            properties:
+                              field_1709661380007:
+                                type:
+                                  - 'null'
+                                  - string
+                              field_1709661519930:
+                                type:
+                                  - 'null'
+                                  - string
+                          hobbies:
+                            type: array
+                            items:
+                              type: string
+                          socialData:
+                            type: object
+                            properties:
+                              linkedin:
+                                type:
+                                  - 'null'
+                                  - string
+                          superpowers:
+                            type: array
+                            items:
+                              type: string
+                          foodPreferences:
+                            type: array
+                            items:
+                              type: string
+                      email:
+                        type: string
+                      surname:
+                        type: string
+                      /root/id:
+                        type: object
+                        properties:
+                          value:
+                            type: string
+                      fullName:
+                        type: string
+                      personal:
+                        type: object
+                        properties:
+                          custom:
+                            type: object
+                            properties:
+                              field_1638446193612:
+                                type:
+                                  - 'null'
+                                  - string
+                          pronouns:
+                            type:
+                              - 'null'
+                              - string
+                          shortBirthDate:
+                            type:
+                              - 'null'
+                              - string
+                      avatarUrl:
+                        type:
+                          - 'null'
+                          - string
+                      companyId:
+                        type: number
+                      firstName:
+                        type: string
+                      /work/site:
+                        type: object
+                        properties:
+                          value:
+                            type: string
+                      /root/email:
+                        type: object
+                        properties:
+                          value:
+                            type: string
+                      /work/title:
+                        type: object
+                        properties:
+                          value:
+                            type: string
+                      displayName:
+                        type: string
+                      /about/about:
+                        type: object
+                        properties:
+                          value:
+                            type: string
+                      /work/siteId:
+                        type: object
+                        properties:
+                          value:
+                            type: number
+                      /about/avatar:
+                        type: object
+                        properties:
+                          value:
+                            type: string
+                      /root/surname:
+                        type: object
+                        properties:
+                          value:
+                            type: string
+                      /work/manager:
+                        type: object
+                        properties:
+                          value:
+                            type: string
+                      coverImageUrl:
+                        type: string
+                      /about/hobbies:
+                        type: object
+                        properties:
+                          value:
+                            type: array
+                            items:
+                              type: string
+                      /root/fullName:
+                        type: object
+                        properties:
+                          value:
+                            type: string
+                      /root/avatarUrl:
+                        type: object
+                        properties:
+                          value:
+                            type: string
+                      /root/companyId:
+                        type: object
+                        properties:
+                          value:
+                            type: number
+                      /root/firstName:
+                        type: object
+                        properties:
+                          value:
+                            type: string
+                      /work/isManager:
+                        type: object
+                        properties:
+                          value:
+                            type: boolean
+                      /work/reportsTo:
+                        type: object
+                        properties:
+                          value:
+                            type: object
+                            properties:
+                              id:
+                                type: string
+                              email:
+                                type: string
+                              surname:
+                                type: string
+                              firstName:
+                                type: string
+                              displayName:
+                                type: string
+                      /work/startDate:
+                        type: object
+                        properties:
+                          value:
+                            type: string
+                      /work/department:
+                        type: object
+                        properties:
+                          value:
+                            type: string
+                      creationDateTime:
+                        type: string
+                      /root/displayName:
+                        type: object
+                        properties:
+                          value:
+                            type: string
+                      /work/tenureYears:
+                        type: object
+                        properties:
+                          value:
+                            type: number
+                      /about/superpowers:
+                        type: object
+                        properties:
+                          value:
+                            type: array
+                            items:
+                              type: string
+                      /personal/pronouns:
+                        type: object
+                        properties:
+                          value:
+                            type: string
+                      /root/coverImageUrl:
+                        type: object
+                        properties:
+                          value:
+                            type: string
+                      /work/directReports:
+                        type: object
+                        properties:
+                          value:
+                            type: number
+                      /work/shortStartDate:
+                        type: object
+                        properties:
+                          value:
+                            type: string
+                      /work/tenureDuration:
+                        type: object
+                        properties:
+                          value:
+                            type: object
+                            properties:
+                              humanize:
+                                type: string
+                              periodISO:
+                                type: string
+                              sortFactor:
+                                type: number
+                      /work/yearsOfService:
+                        type: object
+                        properties:
+                          value:
+                            type: number
+                      /work/indirectReports:
+                        type: object
+                        properties:
+                          value:
+                            type: number
+                      /work/reportsTo/email:
+                        type: object
+                        properties:
+                          value:
+                            type: string
+                      /about/foodPreferences:
+                        type: object
+                        properties:
+                          value:
+                            type: array
+                            items:
+                              type: string
+                      /root/creationDateTime:
+                        type: object
+                        properties:
+                          value:
+                            type: string
+                      /work/originalStartDate:
+                        type: object
+                        properties:
+                          value:
+                            type: string
+                      /personal/shortBirthDate:
+                        type: object
+                        properties:
+                          value:
+                            type: string
+                      /work/secondLevelManager:
+                        type: object
+                        properties:
+                          value:
+                            type: string
+                      /work/activeEffectiveDate:
+                        type: object
+                        properties:
+                          value:
+                            type: string
+                      /work/tenureDurationYears:
+                        type: object
+                        properties:
+                          value:
+                            type: number
+                      /about/socialData/linkedin:
+                        type: object
+                        properties:
+                          value:
+                            type: string
+                      /work/durationOfEmployment:
+                        type: object
+                        properties:
+                          value:
+                            type: object
+                            properties:
+                              humanize:
+                                type: string
+                              periodISO:
+                                type: string
+                              sortFactor:
+                                type: number
+                      /work/reportsToIdInCompany:
+                        type: object
+                        properties:
+                          value:
+                            type: number
+                      /work/daysOfPreviousService:
+                        type: object
+                        properties:
+                          value:
+                            type: number
+                      /work/custom/field_1630074448210:
+                        type: object
+                        properties:
+                          value:
+                            type: string
+                      /about/custom/field_1709661380007:
+                        type: object
+                        properties:
+                          value:
+                            type: string
+                      /about/custom/field_1709661519930:
+                        type: object
+                        properties:
+                          value:
+                            type: string
+                      /personal/custom/field_1638446193612:
+                        type: object
+                        properties:
+                          value:
+                            type: string
+                      /work/customColumns/column_1629202787624:
+                        type: object
+                        properties:
+                          value:
+                            type: string
+                      /work/customColumns/column_1629202807018:
+                        type: object
+                        properties:
+                          value:
+                            type: string
+                      /work/customColumns/column_1650459249570:
+                        type: object
+                        properties:
+                          value:
+                            type: string
+                      /work/customColumns/column_1713259376788:
+                        type: object
+                        properties:
+                          value:
+                            type: string
+              parent_key: id
+              partition_field: parent_id
+    primary_key: []
+    schema_loader:
+      type: InlineSchemaLoader
+      schema:
+        type: object
+        $schema: http://json-schema.org/schema#
+        properties:
+          id:
+            type: number
+          site:
+            type: string
+          title:
+            type: string
+          change:
+            type: object
+            properties:
+              reason:
+                type:
+                  - 'null'
+                  - string
+              changedById:
+                type: string
+          siteId:
+            type: number
+          isCurrent:
+            type: boolean
+          reportsTo:
+            type: object
+            properties:
+              id:
+                type: string
+              email:
+                type: string
+              surname:
+                type: string
+              firstName:
+                type: string
+              displayName:
+                type: string
+          department:
+            type: string
+          employee_id:
+            type: number
+          canBeDeleted:
+            type: boolean
+          customColumns:
+            type: object
+            properties:
+              column_1629202787624:
+                type: string
+              column_1629202807018:
+                type: string
+              column_1650459249570:
+                type: string
+          effectiveDate:
+            type: string
+          workChangeType:
+            type: string
+          endEffectiveDate:
+            type:
+              - 'null'
+              - string
+          modificationDate:
+            type: string
+          activeEffectiveDate:
+            type: string
+    transformations:
+      - type: AddFields
+        fields:
+          - path:
+              - employee_id
+            value: '{{ stream_partition.parent_id | string }}'
+  - name: lists
+    type: DeclarativeStream
+    retriever:
+      type: SimpleRetriever
+      paginator:
+        type: NoPagination
+      requester:
+        path: company/named-lists
+        type: HttpRequester
+        url_base: https://api.hibob.com/v1/
+        http_method: GET
+        authenticator:
+          type: ApiKeyAuthenticator
+          api_token: '{{ config[''api_key''] }}'
+          inject_into:
+            type: RequestOption
+            field_name: Authorization
+            inject_into: header
+        request_headers: {}
+        request_body_json: {}
+        request_parameters:
+          includeArchived: 'true'
+      record_selector:
+        type: RecordSelector
+        extractor:
+          type: DpathExtractor
+          field_path:
+            - '*'
+      partition_router: []
+    primary_key:
+      - name
+    schema_loader:
+      type: InlineSchemaLoader
+      schema:
+        type: object
+        $schema: http://json-schema.org/schema#
+        properties:
+          name:
+            type: string
+          items:
+            type: array
+            items:
+              type: object
+              properties:
+                id:
+                  type:
+                    - number
+                    - string
+                name:
+                  type: string
+                value:
+                  type: string
+                archived:
+                  type: boolean
+                children:
+                  type: array
+                  items:
+                    type: object
+                    properties:
+                      id:
+                        type: number
+                      name:
+                        type: string
+                      value:
+                        type: string
+                      archived:
+                        type: boolean
+                      children:
+                        type: array
+                        items:
+                          type: object
+                          properties:
+                            id:
+                              type: number
+                            name:
+                              type: string
+                            value:
+                              type: string
+                            archived:
+                              type: boolean
+                            children:
+                              type: array
+          values:
+            type: array
+            items:
+              type: object
+              properties:
+                id:
+                  type:
+                    - number
+                    - string
+                name:
+                  type: string
+                value:
+                  type: string
+                archived:
+                  type: boolean
+                children:
+                  type: array
+                  items:
+                    type: object
+                    properties:
+                      id:
+                        type: number
+                      name:
+                        type: string
+                      value:
+                        type: string
+                      archived:
+                        type: boolean
+                      children:
+                        type: array
+                        items:
+                          type: object
+                          properties:
+                            id:
+                              type: number
+                            name:
+                              type: string
+                            value:
+                              type: string
+                            archived:
+                              type: boolean
+                            children:
+                              type: array
+  - name: fields
+    type: DeclarativeStream
+    retriever:
+      type: SimpleRetriever
+      paginator:
+        type: NoPagination
+      requester:
+        path: /company/people/fields
+        type: HttpRequester
+        url_base: https://api.hibob.com/v1/
+        http_method: GET
+        authenticator:
+          type: ApiKeyAuthenticator
+          api_token: '{{ config[''api_key''] }}'
+          inject_into:
+            type: RequestOption
+            field_name: Authorization
+            inject_into: header
+        request_headers: {}
+        request_body_json: {}
+        request_parameters: {}
+      record_selector:
+        type: RecordSelector
+        extractor:
+          type: DpathExtractor
+          field_path: []
+      partition_router: []
+    primary_key:
+      - id
+    schema_loader:
+      type: InlineSchemaLoader
+      schema:
+        type: object
+        $schema: http://json-schema.org/schema#
+        properties:
+          id:
+            type: string
+          name:
+            type: string
+          type:
+            type: string
+          category:
+            type: string
+          jsonPath:
+            type: string
+          typeData:
+            type: object
+            properties:
+              listId:
+                type: string
+          historical:
+            type: boolean
+          description:
+            type:
+              - 'null'
+              - string
+version: 0.57.0
+metadata:
+  autoImportSchema:
+    work: true
+    lists: true
+    fields: true
+    people: true
