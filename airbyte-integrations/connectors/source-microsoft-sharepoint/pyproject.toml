@@ -17,7 +17,7 @@ include = "source_microsoft_sharepoint"
 
 [tool.poetry.dependencies]
 python = "^3.9,<3.12"
-msal = "==1.25.0"
+msal = "==1.28.0"
 Office365-REST-Python-Client = "==2.5.5"
 smart-open = "==6.4.0"
 
